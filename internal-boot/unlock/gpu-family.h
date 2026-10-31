@@ -34,8 +34,10 @@
 #define GU_GPU_FAMILY_NAME "GA102"
 #define GU_FAMILY_CHIP_ID 0xb72000a1U
 /* Existing 3090/3090 Ti combinations are unchanged. Issue #73 adds only
- * the GA102 RTX 3080 12 GiB tuple, not a free ID/memory cross product. */
-#if !(((GU_BOARD_ID == 0x220410deU || GU_BOARD_ID == 0x220310deU) && (GU_DEVICE_MEMORY_SIZE == 0x6000U || GU_DEVICE_MEMORY_SIZE == 0x5ff4U)) || (GU_BOARD_ID == 0x220a10deU && GU_DEVICE_MEMORY_SIZE == 0x3000U))
+ * the GA102 RTX 3080 12 GiB tuple, not a free ID/memory cross product.
+ * The RTX 3080 Ti 12 GiB (2208) tuple is the same kind of exact pair; its
+ * driver admission stays PCI-specific in proven.json. */
+#if !(((GU_BOARD_ID == 0x220410deU || GU_BOARD_ID == 0x220310deU) && (GU_DEVICE_MEMORY_SIZE == 0x6000U || GU_DEVICE_MEMORY_SIZE == 0x5ff4U)) || ((GU_BOARD_ID == 0x220a10deU || GU_BOARD_ID == 0x220810deU) && GU_DEVICE_MEMORY_SIZE == 0x3000U))
 #error Card identity or memory is outside the reviewed GA102 family combinations
 #endif
 #elif GU_GPU_FAMILY == GU_GPU_FAMILY_GA104

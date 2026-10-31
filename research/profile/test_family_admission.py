@@ -24,9 +24,10 @@ class FamilyAdmissionTests(unittest.TestCase):
         accepted = {(0x220410de, 0xb72000a1, 0x6000), (0x220410de, 0xb72000a1, 0x5ff4),
                     (0x220310de, 0xb72000a1, 0x6000), (0x220310de, 0xb72000a1, 0x5ff4),
                     (0x248710de, 0xb74000a1, 0x3000), (0x250410de, 0xb76000a1, 0x3000),
-                    (0x248410de, 0xb74000a1, 0x2000), (0x24c910de, 0xb74000a1, 0x2000), (0x220a10de, 0xb72000a1, 0x3000)}
+                    (0x248410de, 0xb74000a1, 0x2000), (0x24c910de, 0xb74000a1, 0x2000), (0x220a10de, 0xb72000a1, 0x3000),
+                    (0x220810de, 0xb72000a1, 0x3000)}
         for board, chip, memory in itertools.product(
-                (0x220410de, 0x220310de, 0x248710de, 0x250410de, 0x248410de, 0x24c910de, 0x248210de, 0x220a10de, 0x221610de, 0x999910de),
+                (0x220410de, 0x220310de, 0x248710de, 0x250410de, 0x248410de, 0x24c910de, 0x248210de, 0x220a10de, 0x220810de, 0x221610de, 0x999910de),
                 (0xb72000a1, 0xb74000a1, 0xb76000a1, 0xb76000a2), (0x6000, 0x5ff4, 0x3000, 0x2800, 0x2000)):
             text = data.synthetic_capture(board=board, chip=chip, memory=memory)
             with self.subTest(board=board, chip=chip, memory=memory):
@@ -53,13 +54,14 @@ class FamilyAdmissionTests(unittest.TestCase):
                (0x250410de,0xb76000a1,0x3000,('60010',)),
                (0x248410de,0xb74000a1,0x2000,('60009',)),
                (0x24c910de,0xb74000a1,0x2000,('60015',)),
-               (0x220a10de,0xb72000a1,0x3000,('60010',)))
+               (0x220a10de,0xb72000a1,0x3000,('60010',)),
+               (0x220810de,0xb72000a1,0x3000,('6000a',)))
         for board,chip,memory,versions in cases:
             for version_code, hash_code in itertools.product(ENVELOPE['nvgop'], repeat=2):
                 code={'version':version_code['version'],'text_sha256':hash_code['text_sha256']}
                 text = data.synthetic_capture(board=board, chip=chip,
                                               memory=memory)
-                text = re.sub(r'version=0x600(?:09|10|15)', 'version=0x'+code['version'], text)
+                text = re.sub(r'version=0x600(?:09|10|15|0a)', 'version=0x'+code['version'], text)
                 with tempfile.TemporaryDirectory() as folder:
                     diag=Path(folder)/'DIAG00.TXT';diag.write_text(text)
                     with patch.object(data.mp, 'code_hash', return_value={'sha256':code['text_sha256'], 'bytes':0x500}):
